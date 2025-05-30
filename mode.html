@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="mode.css">
+</head>
+<body>
+  <button onclick="toggleDarkMode()" id="rtl">Dark Mode</button>
+
+  <div class="container">
+    <h1>Multi-Mode QR Code Generator</h1>
+
+    <!-- Mode Selection -->
+    <div class="step">
+      <label for="mode">Select QR Code Type:</label>
+      <select id="mode" onchange="updateForm()">
+        <option value="upi">UPI Payment</option>
+        <option value="text">Text / URL</option>
+        <option value="email">Email</option>
+        <option value="phone">Phone Number</option>
+        <option value="contact">Contact Info</option>
+      </select>
+    </div>
+
+    <!-- Dynamic Inputs -->
+    <div id="inputFields" class="step"></div>
+
+    <!-- QR Code Generator -->
+    <div class="step">
+      <button onclick="generateQR()">Generate QR</button>
+    </div>
+
+    <!-- Output -->
+    <div class="step">
+      <div id="qrResult"></div>
+      <a id="downloadLink" style="display:none;" download="qrcode.png">Download QR Code</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    const inputFields = document.getElementById('inputFields');
+    const qrResult = document.getElementById('qrResult');
+    const downloadLink = document.getElementById('downloadLink');
+    const modeSelect = document.getElementById('mode');
+
+    const formTemplates = {
+      text: `
+        <label>Enter Text or URL:</label>
+        <input type="text" id="textInput" placeholder="Enter text or URL">
+      `,
+      upi: `
+        <label>UPI ID:</label>
+        <input type="text" id="upiId" placeholder="e.g. yourname@upi">
+        <label>Payee Name:</label>
+        <input type="text" id="upiName" placeholder="e.g. Rahul">
+        <label>Amount (optional):</label>
+        <input type="number" id="upiAmount" placeholder="e.g. 100">
+      `,
+      email: `
+        <label>Email Address:</label>
+        <input type="email" id="emailAddress" placeholder="e.g. someone@example.com">
+        <label>Subject (optional):</label>
+        <input type="text" id="emailSubject" placeholder="Subject">
+        <label>Body (optional):</label>
+        <input type="text" id="emailBody" placeholder="Email message...">
+      `,
+      phone: `
+        <label>Phone Number:</label>
+        <input type="text" id="phoneNumber" placeholder="e.g. +919876543210">
+      `,
+      contact: `
+        <label>Name:</label>
+        <input type="text" id="contactName" placeholder="Full Name">
+        <label>Phone:</label>
+        <input type="text" id="contactPhone" placeholder="Phone number">
+        <label>Email:</label>
+        <input type="email" id="contactEmail" placeholder="Email address">
+      `
+    };
+
+    function updateForm() {
+      const mode = modeSelect.value;
+      inputFields.innerHTML = formTemplates[mode];
+    }
+
+    function generateQR() {
+      const mode = modeSelect.value;
+      let data = '';
+
+      switch (mode) {
+        case 'text':
+          const text = document.getElementById('textInput').value.trim();
+          if (!text) return alert("Enter text or URL.");
+          data = text;
+          break;
+
+        case 'upi':
+          const upiId = document.getElementById('upiId').value.trim();
+          const upiName = document.getElementById('upiName').value.trim();
+          const upiAmount = document.getElementById('upiAmount').value.trim();
+          if (!upiId || !upiName) return alert("Enter UPI ID and Payee Name.");
+          data = `upi://pay?pa=${upiId}&pn=${upiName}${upiAmount ? `&am=${upiAmount}` : ''}&cu=INR`;
+          break;
+
+        case 'email':
+          const to = document.getElementById('emailAddress').value.trim();
+          const subject = document.getElementById('emailSubject').value.trim();
+          const body = document.getElementById('emailBody').value.trim();
+          if (!to) return alert("Enter email address.");
+          data = `mailto:${to}?${subject ? `subject=${encodeURIComponent(subject)}` : ''}${body ? `&body=${encodeURIComponent(body)}` : ''}`;
+          break;
+
+        case 'phone':
+          const phone = document.getElementById('phoneNumber').value.trim();
+          if (!phone) return alert("Enter phone number.");
+          data = `tel:${phone}`;
+          break;
+
+        case 'contact':
+          const name = document.getElementById('contactName').value.trim();
+          const phoneNum = document.getElementById('contactPhone').value.trim();
+          const email = document.getElementById('contactEmail').value.trim();
+          if (!name || !phoneNum || !email) return alert("Fill all contact fields.");
+          data = `MECARD:N:${name};TEL:${phoneNum};EMAIL:${email};;`;
+          break;
+      }
+
+      qrResult.innerHTML = '';
+      downloadLink.style.display = 'none';
+
+      const canvas = document.createElement('canvas');
+      QRCode.toCanvas(canvas, data, { width: 250 }, (err) => {
+        if (err) return console.error(err);
+        qrResult.appendChild(canvas);
+        downloadLink.href = canvas.toDataURL("image/png");
+        downloadLink.style.display = "inline-block";
+        showToast("QR Code Generated!");
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerText = msg;
+      document.body.appendChild(toast);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Initialize default form
+    updateForm();
+  </script>
+</body>
+</html>

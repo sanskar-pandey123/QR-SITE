@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Pro Payment</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .payment-container {
+      background-color: #1e1e1e;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    li {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    li::before {
+      content: "✔";
+      color: #00cc66;
+      margin-right: 10px;
+    }
+
+    .price {
+      font-size: 24px;
+      margin: 25px 0;
+    }
+
+    button {
+      background-color: #00cc66;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00b359;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="payment-container">
+    <h1>QR Pro Plan</h1>
+    <p class="subtitle">Access powerful QR features and premium tools</p>
+
+    <ul>
+      <li>Unlimited QR Code Generation</li>
+      <li>Download in HD & SVG Format</li>
+      <li>Analytics & Scan Tracking</li>
+      <li>No Ads Experience</li>
+      <li>Priority Support</li>
+    </ul>
+
+    <p class="price">₹199/month</p>
+
+    <button onclick="subscribe()">Subscribe</button>
+  </div>
+
+  <script>
+    function subscribe() {
+      alert("Redirecting to payment gateway...");
+      // You can replace this with actual payment logic
+      // window.location.href = 'payment-gateway.html';
+    }
+  </script>
+
+</body>
+</html>
